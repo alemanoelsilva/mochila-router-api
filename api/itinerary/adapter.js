@@ -9,9 +9,9 @@ exports.createItinerary = async ({
   try {
     await repository.saveItinerary(payload);
 
-    return onSuccess();
+    return onSuccess(201);
   } catch (error) {
-    console.log(`There is an error in creation of Itinerary, ${JSON.stringify(error)}`);
+    console.log(`There is an error in creation of Itinerary, ${error}`);
     return onError(error);
   }
 };
