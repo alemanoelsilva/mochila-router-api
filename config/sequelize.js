@@ -1,22 +1,35 @@
 'use strict';
 
 const Sequelize = require('sequelize');
-const { db: { database, user, pass } } = require('./environment');
 
 let connection = null;
 
-const connectDB = () => {
-  if (connection) return connection;
+const sequelizeDB = ({
+  connect: async ({ database, user, pass }) => {
+    if (connection) return connection;
 
-  connection = new Sequelize(database, user, pass, {
-    host: 'localhost',
-    dialect: 'postgres',
-    operatorsAliases: false
-  });
+    try {
+      connection = new Sequelize(database, user, pass, {
+        host: 'localhost',
+        dialect: 'postgres',
+        operatorsAliases: false
+      });
 
-  connection.sync({ force: true })
-    .then(() => console.log('Postgres connected'))
-    .catch(error => console.log(`Error in the connection Postgres ${error}`))
-};
+      console.log(`Database connected ${database}`);
 
-module.exports = connectDB;
+      return connection;
+    } catch (error) {
+      console.log(`There is an error in the connection Postgres ${error}`);
+      return null;
+    }
+  },
+
+  disconnect: () => {
+    connection.close();
+  },
+
+  getConnection: () => connection
+
+});
+
+module.exports = sequelizeDB;
