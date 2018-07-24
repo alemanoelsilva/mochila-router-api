@@ -9,7 +9,11 @@ const request = {
 };
 
 const model = (model) => ({
-  findAll: ({ query = {} }) => model.findAll(query)
+  findFirst: async (query = {}) => {
+    const result = await model.findAll(query);
+    return result[0] ? result[0].dataValues || {} : {};
+  },
+  destroy: async (query = {}) => model.destroy({ where: query })
 });
 
 module.exports = {

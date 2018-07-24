@@ -33,10 +33,12 @@ const Itinerary = getConnection().define('itinerary', {
     allowNull: false,
   },
   user: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   places: {
-    type: Sequelize.ARRAY(Sequelize.JSON)
+    type: Sequelize.ARRAY(Sequelize.JSON),
+    allowNull: false,
   },
   createdAt: {
     type: Sequelize.DATE,
