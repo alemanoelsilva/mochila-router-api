@@ -27,7 +27,6 @@ describe('Itinerary Create Integration Test', () => {
         url: URL_ITINERARY,
         data: payload
       });
-
       expect(response.body).toEqual({});
       expect(response.statusCode).toEqual(201);
 

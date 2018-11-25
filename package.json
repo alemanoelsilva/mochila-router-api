@@ -28,6 +28,7 @@
   },
   "jest": {
     "verbose": true,
+    "testURL": "http://localhost/",
     "setupTestFrameworkScriptFile": "./test/setup.js",
     "collectCoverageFrom": [
       "api/**/*.js",
