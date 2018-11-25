@@ -1,4 +1,4 @@
 'use strict';
 
-module.exports = response => (statusCode) =>
-  response.status(statusCode).json({});
+module.exports = response => (statusCode = 200, data = {}) =>
+  response.status(statusCode).json(data);

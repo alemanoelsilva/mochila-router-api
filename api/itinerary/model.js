@@ -1,9 +1,9 @@
 'use strict';
 
 const Sequelize = require('sequelize');
-const connection = require('../../config/sequelize')();
+const { getConnection } = require('../../config/sequelize');
 
-const Itinerary = connection.define('itinerary', {
+const Itinerary = getConnection().define('itinerary', {
   _id: {
     type: Sequelize.UUID,
     field: '_id',
@@ -33,10 +33,12 @@ const Itinerary = connection.define('itinerary', {
     allowNull: false,
   },
   user: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   places: {
-    type: Sequelize.ARRAY(Sequelize.JSON)
+    type: Sequelize.ARRAY(Sequelize.JSON),
+    allowNull: false,
   },
   createdAt: {
     type: Sequelize.DATE,
@@ -47,10 +49,11 @@ const Itinerary = connection.define('itinerary', {
     type: Sequelize.DATE,
     allowNull: true,
   },
-},
-  {
-    tableName: 'itinerary',
-    timestamps: false
-  });
+}, {
+  tableName: 'itinerary',
+  timestamps: false
+});
 
-  module.exports = Itinerary;
+Itinerary.sync({ force: false });
+
+module.exports = Itinerary;
