@@ -15,6 +15,9 @@ const vars = {
   app: {
     port: process.env.PORT
   },
+  logger: {
+    level: ENVIRONMENT.TEST ? process.env.LOGGER_LEVEL : 'fatal'
+  },
   db: {
     database: env === ENVIRONMENT.TEST ? process.env.POSTGRES_DATABASE_TEST : process.env.POSTGRES_DATABASE,
     user: process.env.POSTGRES_USER,

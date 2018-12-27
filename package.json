@@ -14,8 +14,11 @@
   "author": "Alexandre Manoel da Silva",
   "license": "ISC",
   "dependencies": {
+    "bunyan": "^1.8.12",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "joi": "^14.3.0",
+    "moment": "^2.23.0",
     "nodemon": "^1.18.2",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",

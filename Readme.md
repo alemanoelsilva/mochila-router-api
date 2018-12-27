@@ -13,6 +13,8 @@ POSTGRES_DATABASE_TEST=mochilarouter_test
 POSTGRES_USER=postgres
 POSTGRES_PASS=postgres123
 
+LOGGER_LEVEL=trace
+
 PORT=4000
 ```
 
@@ -37,7 +39,7 @@ docker run --name alemanoelsilva-postgres -p 5432:5432 -e POSTGRES_USER=postgres
 ```bash
 docker exec -it name_image_postgres bash
 
-psql -h localhost -U user_postgres -W
+psql -h localhost -U postgres -W
 
 # password required
 ```
