@@ -34,3 +34,11 @@ exports.getResponse = Joi.object({
   })).required(),
   count: Joi.number().required(),
 });
+
+exports.putOrDeleteRequest = Joi.object({
+  id: Joi.string().min(36).max(36).required(),
+});
+
+exports.putOrDeleteResponse = Joi.object({
+  message: Joi.string().required(),
+});

@@ -21,6 +21,9 @@ module.exports = ({
     repository: {
       save: repository.create
     },
+    formatter: {
+      created: formatter.formatItinerary({ moment, formatDate })
+    },
     logger,
     onSuccess: onSuccess(response),
     onError: onError(response)
@@ -36,6 +39,31 @@ module.exports = ({
       list: formatter.formatListItinerary({ moment, formatDate })
     },
     onSuccess: onNext(response, next),
+    onError: onError(response)
+  }),
+
+  update: (request, response) => adapter.update({
+    payload: request.body,
+    params: {
+      id: request.params.id
+    },
+    repository: {
+      update: repository.update
+    },
+    logger,
+    onSuccess: onSuccess(response),
+    onError: onError(response)
+  }),
+
+  remove: (request, response) => adapter.remove({
+    params: {
+      id: request.params.id
+    },
+    repository: {
+      delete: repository.delete
+    },
+    logger,
+    onSuccess: onSuccess(response),
     onError: onError(response)
   }),
 });

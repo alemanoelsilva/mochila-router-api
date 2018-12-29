@@ -3,17 +3,25 @@
 const {
   create,
   getAll,
+  update,
+  remove,
 } = require('./api/itineraries/factory');
 
 const {
   getRequest,
   getResponse,
+  putOrDeleteRequest,
+  putOrDeleteResponse,
 } = require('./api/itineraries/schemas');
 
 const {
   requestValidation,
   responseValidation,
 } = require('./api/helpers/schema-validation');
+
+const URL = {
+  ITINERARY: '/api/itineraries',
+};
 
 module.exports = (app) => {
   app.post('/api/itineraries',
@@ -27,5 +35,17 @@ module.exports = (app) => {
     getAll,
     responseValidation({ schema: getResponse }),
   );
+
+  app.put('/api/itineraries/:id',
+    requestValidation({ schema: putOrDeleteRequest, requestType: 'params' }),
+    update,
+    responseValidation({ schema: putOrDeleteResponse }),
+  );
+
+  app.delete('/api/itineraries/:id',
+  requestValidation({ schema: putOrDeleteRequest, requestType: 'params' }),
+  remove,
+  responseValidation({ schema: putOrDeleteResponse }),
+);
 
 };
