@@ -29,7 +29,7 @@ module.exports = ({
     onError: onError(response)
   }),
 
-  getAll: (request, response, next) => adapter.getAll({
+  list: (request, response, next) => adapter.list({
     query: request.query,
     logger,
     repository: {

@@ -23,7 +23,7 @@ exports.create = async ({
   }
 };
 
-exports.getAll = async ({
+exports.list = async ({
   query,
   logger,
   repository,
@@ -36,7 +36,7 @@ exports.getAll = async ({
 
     const { itineraries, count } = await repository.getAll(query);
 
-    logger.info('Database returned the follow list of itineraries', formatter.list(itineraries));
+    logger.info(`Database returned the follow list of itineraries ${JSON.stringify(itineraries)} with total ${count} itineraries`);
 
     return onSuccess({
       statusCode: 200,

@@ -2,7 +2,7 @@
 
 const {
   create,
-  getAll,
+  list,
   update,
   remove,
 } = require('./api/itineraries/factory');
@@ -34,7 +34,7 @@ module.exports = (app) => {
 
   app.get('/api/itineraries',
     requestValidation({ schema: getRequest, requestType: 'query' }),
-    getAll,
+    list,
     responseValidation({ schema: getResponse }),
   );
 
