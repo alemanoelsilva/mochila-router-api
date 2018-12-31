@@ -1,6 +1,6 @@
 'use strict';
 
-const { createItinerary } = require('../../api/itinerary/adapter');
+const { create } = require('./adapter');
 
 const payload = {
   name: 'Teste',
@@ -16,10 +16,17 @@ const payload = {
 
 describe('Itinerary Adapter Unit tests', () => {
   const mock = {
-    repository: {
-      saveItinerary: jest.fn(obj => obj)
-    },
     payload,
+    repository: {
+      save: jest.fn(data => data)
+    },
+    formatter: {
+      created: jest.fn()
+    },
+    logger: {
+      info: jest.fn(),
+      error: jest.fn()
+    },
     onSuccess: jest.fn(),
     onError: jest.fn(err => ({
       name: err.name || 'IntervalServerError',
@@ -35,19 +42,24 @@ describe('Itinerary Adapter Unit tests', () => {
 
   describe('Create an Itinerary', () => {
     test('Should create an Itinerary with success', async () => {
-      await createItinerary(mock);
+      await create(mock);
 
-      expect(mock.repository.saveItinerary).toHaveBeenCalledTimes(1);
+      expect(mock.logger.info).toHaveBeenCalledTimes(1);
+      expect(mock.repository.save).toHaveBeenCalledTimes(1);
+      expect(mock.formatter.created).toHaveBeenCalledTimes(1);
       expect(mock.onSuccess).toHaveBeenCalledTimes(1);
+      expect(mock.logger.error).toHaveBeenCalledTimes(0);
       expect(mock.onError).toHaveBeenCalledTimes(0);
     });
 
     test('Should return an error, invalid Itinerary', async () => {
-      mock.repository.saveItinerary = () => Promise.reject(new Error('invalid Itinerary'));
+      mock.repository.save = () => Promise.reject(new Error('invalid Itinerary'));
 
-      const response = await createItinerary(mock);
+      const response = await create(mock);
 
+      expect(mock.logger.info).toHaveBeenCalledTimes(1);
       expect(mock.onSuccess).toHaveBeenCalledTimes(0);
+      expect(mock.logger.error).toHaveBeenCalledTimes(1);
       expect(mock.onError).toHaveBeenCalledTimes(1);
 
       expect(response).toHaveProperty('status_code', 'name', 'message', 'details');

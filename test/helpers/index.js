@@ -8,7 +8,7 @@ const request = {
   post: ({ url, data = {} }) => supertest(app).post(url).send(data)
 };
 
-const model = (model) => ({
+const database = (model) => ({
   findFirst: async (query = {}) => {
     const result = await model.findAll(query);
     return result[0] ? result[0].dataValues || {} : {};
@@ -18,5 +18,5 @@ const model = (model) => ({
 
 module.exports = {
   request,
-  model,
+  database,
 };

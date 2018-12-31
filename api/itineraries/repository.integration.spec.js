@@ -1,9 +1,9 @@
 'use strict';
 
-const repository = require('../../api/itinerary/repository');
-const Itinerary = require('../../api/itinerary/model');
+const repository = require('./repository');
+const Itinerary = require('./model');
 
-const { model } = require('../helpers');
+const { database } = require('../../test/helpers');
 
 const itinerary = {
   name: 'name for test',
@@ -17,7 +17,7 @@ const itinerary = {
   }],
 };
 
-beforeEach(async () => model(Itinerary).destroy());
+beforeEach(async () => database(Itinerary).destroy());
 
 describe('Itinerary Repository Integration Test', () => {
   describe('Creation of itinerary with success', () => {
@@ -27,7 +27,7 @@ describe('Itinerary Repository Integration Test', () => {
 
         await create(itinerary);
 
-        const itineraryDB = await model(Itinerary).findFirst();
+        const itineraryDB = await database(Itinerary).findFirst();
 
         expect(itineraryDB).toHaveProperty('name', payload.name);
         expect(itineraryDB).toHaveProperty('isPrivate', payload.isPrivate);

@@ -8,6 +8,8 @@ const {
 } = require('./api/itineraries/factory');
 
 const {
+  postRequest,
+  postResponse,
   getRequest,
   getResponse,
   putOrDeleteRequest,
@@ -25,9 +27,9 @@ const URL = {
 
 module.exports = (app) => {
   app.post('/api/itineraries',
-    // requestValidation({ schema: postRequest, requestType: 'body' }),
+    requestValidation({ schema: postRequest, requestType: 'body' }),
     create,
-    // responseValidation({ schema: postResponse }),
+    responseValidation({ schema: postResponse }),
   );
 
   app.get('/api/itineraries',
