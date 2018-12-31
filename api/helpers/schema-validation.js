@@ -17,8 +17,6 @@ exports.requestValidation = ({ schema, requestType }) => (request, response, nex
 };
 
 exports.responseValidation = ({ schema }) => (request, response, next) => {
-  console.log('\n\n\n response data', response.data)
-
   const { error } = Joi.validate(response.data, schema);
   if (error) {
     logger.error('There is an error on RequestValidation', error);

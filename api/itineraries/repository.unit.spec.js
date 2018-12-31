@@ -1,10 +1,10 @@
 'use strict';
 
-const repository = require('../../api/itinerary/repository');
+const repository = require('./repository');
 
 describe('Itinerary Repository Unit tests', () => {
   const model = {
-    create: jest.fn()
+    create: jest.fn(data => ({ ...data, dataValues: '' }))
   };
 
   afterEach(() => {
@@ -18,7 +18,6 @@ describe('Itinerary Repository Unit tests', () => {
       create();
 
       expect(model.create).toBeCalled;
-
     });
   });
 });

@@ -3,22 +3,27 @@
 exports.create = async ({
   payload,
   repository,
+  formatter,
   logger,
   onSuccess,
   onError,
 }) => {
   try {
-    logger.info('New Itinerary will be created with', payload)
-    await repository.save(payload);
+    logger.info('New Itinerary will be created with', payload);
 
-    return onSuccess({ statusCode: 201 });
+    const { itinerary } = await repository.save(payload);
+
+    return onSuccess({
+      statusCode: 201,
+      data: formatter.created(itinerary)
+    });
   } catch (error) {
     logger.error('There is an error at the Itinerary create', error);
     return onError(error);
   }
 };
 
-exports.getAll = async ({
+exports.list = async ({
   query,
   logger,
   repository,
@@ -27,11 +32,11 @@ exports.getAll = async ({
   onError,
 }) => {
   try {
-    logger.info('Get Itinerary\'s array filtered by', query)
+    logger.info('Get Itinerary\'s array filtered by', query);
+
     const { itineraries, count } = await repository.getAll(query);
 
-    logger.info('Database returned the follow list of itineraries', formatter.list(itineraries));
-    console.log('\n\nDatabase returned the follow list of itineraries', formatter.list(itineraries)[0].places);
+    logger.info(`Database returned the follow list of itineraries ${JSON.stringify(itineraries)} with total ${count} itineraries`);
 
     return onSuccess({
       statusCode: 200,
@@ -44,4 +49,59 @@ exports.getAll = async ({
     logger.error('There is an error at the Itinerary find', error);
     return onError(error);
   }
-}
+};
+
+exports.update = async ({
+  payload,
+  params,
+  repository,
+  logger,
+  onSuccess,
+  onError,
+}) => {
+  try {
+    logger.info(`Itinerary with id ${params.id} will be change with this payload ${JSON.stringify(payload)}`);
+
+    const result = await repository.update(params, payload);
+
+    const messages = {
+      '0': 'Itinerary was not found',
+      '1': 'Itinerary was updated with success',
+    };
+
+    return onSuccess({
+      statusCode: 200,
+      data: { message: messages[result] }
+    });
+  } catch (error) {
+    logger.error('There is an error at the Itinerary update', error);
+    return onError(error);
+  }
+};
+
+exports.remove = async ({
+  params,
+  repository,
+  logger,
+  onSuccess,
+  onError,
+}) => {
+  try {
+    logger.info(`Itinerary with id ${params.id} will be delete`);
+
+    const result = await repository.delete(params);
+
+    const messages = {
+      '0': 'Itinerary was not found',
+      '1': 'Itinerary was deleted with success',
+    };
+
+    return onSuccess({
+      statusCode: 200,
+      data: { message: messages[result] }
+    });
+  } catch (error) {
+    logger.error('There is an error at the Itinerary delete', error);
+    return onError(error);
+  }
+};
