@@ -407,4 +407,48 @@ describe('Itinerary Adapter Integration Test', () => {
       expect(itineraryDB.updatedAt).toBeNull();
     });
   });
+
+  describe('Deleting of itinerary', () => {
+    const itineraryForDeletion = listOfItinerariesMock[0];
+
+    beforeEach(async () => database(Itinerary).createOne(itineraryForDeletion));
+
+    test('Should delete an itinerary', async () => {
+      let itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', itineraryForDeletion.name);
+
+      const { body, statusCode } = await request.delete({
+        url: URL_ITINERARY,
+        params: itineraryDB._id
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('message', 'Itinerary was deleted with success');
+
+      itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toEqual({});
+    });
+
+    test('Should not delete itinerary when field id is not found', async () => {
+      let itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', itineraryForDeletion.name);
+
+      const { body, statusCode } = await request.delete({
+        url: URL_ITINERARY,
+        params: `${itineraryDB._id.slice(0, 35)}2`
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('message', 'Itinerary was not found');
+
+      itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', itineraryForDeletion.name);
+    });
+  });
 });
