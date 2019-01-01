@@ -5,6 +5,7 @@ const {
   list,
   update,
   remove,
+  listByPlaces,
 } = require('./api/itineraries/factory');
 
 const {
@@ -45,9 +46,15 @@ module.exports = (app) => {
   );
 
   app.delete('/api/itineraries/:id',
-  requestValidation({ schema: putOrDeleteRequest, requestType: 'params' }),
-  remove,
-  responseValidation({ schema: putOrDeleteResponse }),
+    requestValidation({ schema: putOrDeleteRequest, requestType: 'params' }),
+    remove,
+    responseValidation({ schema: putOrDeleteResponse }),
+  );
+
+  app.get('/api/itineraries/place',
+  //requestValidation({ schema: putOrDeleteRequest, requestType: 'params' }),
+  listByPlaces,
+  //responseValidation({ schema: putOrDeleteResponse }),
 );
 
 };

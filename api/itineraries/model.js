@@ -37,7 +37,7 @@ const Itinerary = getConnection().define('itinerary', {
     allowNull: false,
   },
   places: {
-    type: Sequelize.ARRAY(Sequelize.JSON),
+    type: Sequelize.ARRAY(Sequelize.JSONB),
     allowNull: false,
   },
   createdAt: {

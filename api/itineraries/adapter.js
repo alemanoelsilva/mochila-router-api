@@ -105,3 +105,31 @@ exports.remove = async ({
     return onError(error);
   }
 };
+
+exports.listByPlaces = async ({
+  query,
+  logger,
+  repository,
+  formatter,
+  onSuccess,
+  onError,
+}) => {
+  try {
+    logger.info('Get Itinerary\'s array filtered by  places', query);
+
+    const { itineraries, count } = await repository.getByPlaces(query);
+
+    logger.info(`Database returned the follow list of itineraries ${JSON.stringify(itineraries)} with total ${count} itineraries`);
+
+    return onSuccess({
+      statusCode: 200,
+      data: {
+        itineraries: formatter.list(itineraries),
+        count
+      }
+    });
+  } catch (error) {
+    logger.error('There is an error at the Itinerary find', error);
+    return onError(error);
+  }
+};
