@@ -8,6 +8,10 @@ const request = {
   post: ({ url, data = {} }) => supertest(app).post(url).send(data),
 
   get: ({ url, query = '' }) => supertest(app).get(url).query(query),
+
+  put: ({ url, data, params = '' }) => supertest(app).put(`${url}/${params}`).send(data),
+
+  delete: ({ url, params = '' }) => supertest(app).delete(`${url}/${params}`),
 };
 
 const database = (model) => ({
@@ -24,6 +28,8 @@ const database = (model) => ({
   destroy: async (query = {}) => model.destroy({ where: query }),
 
   createMany: async data => model.bulkCreate(data),
+
+  createOne: async data => model.create(data),
 });
 
 const payloadMock = {

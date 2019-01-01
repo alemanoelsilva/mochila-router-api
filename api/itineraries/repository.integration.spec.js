@@ -85,4 +85,55 @@ describe('Itinerary Repository Integration Test', () => {
       }
     });
   });
+
+  describe('Updating Repository', () => {
+    const itineraryForUpdation = listOfItinerariesMock[0];
+
+    beforeEach(async () => database(Itinerary).createOne(itineraryForUpdation));
+
+    test('Should update an itinerary', async () => {
+      try {
+        const { getAll, update } = repository(Itinerary);
+
+        const { itineraries } = await getAll();
+
+        const { message } = await update({
+          id: itineraries[0]._id
+        }, {
+          ...itineraries[0],
+          name: 'New Name'
+        });
+
+        expect(message).toEqual('Itinerary was updated with success');
+      } catch (error) { }
+    });
+
+    test('Should not update an itinerary', async () => {
+      try {
+        const { getAll, update } = repository(Itinerary);
+
+        const { itineraries } = await getAll();
+
+        const { message } = await update({
+          id: `${itineraries[0]._id.slice(0,35)}1`
+        }, {
+          ...itineraries[0],
+          name: 'New Name'
+        });
+
+        expect(message).toEqual('Itinerary was not found');
+      } catch (error) { }
+    });
+
+    test('Should return error when field _id is not provided', async () => {
+      try {
+        const { update } = repository(Itinerary);
+
+        await update();
+
+      } catch (error) {
+        expect(error.toString()).toEqual("TypeError: Cannot destructure property `id` of 'undefined' or 'null'.");
+      }
+    });
+  });
 });

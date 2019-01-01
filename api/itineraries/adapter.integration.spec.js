@@ -357,4 +357,54 @@ describe('Itinerary Adapter Integration Test', () => {
       expect(body).toHaveProperty('message', '"isPrivate" is not allowed');
     });
   });
+
+  describe('Updating of itinerary', () => {
+    const itineraryForUpdation = listOfItinerariesMock[0];
+
+    beforeEach(async () => database(Itinerary).createOne(itineraryForUpdation));
+
+    test('Should update the name of itinerary', async () => {
+      let itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', itineraryForUpdation.name);
+      expect(itineraryDB.updatedAt).toBeNull();
+
+      const { body, statusCode } = await request.put({
+        url: URL_ITINERARY,
+        data: { ...itineraryDB, name: 'New Name for Itinerary' },
+        params: itineraryDB._id
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('message', 'Itinerary was updated with success');
+
+      itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', 'New Name for Itinerary');
+      expect(itineraryDB.updatedAt).not.toBeNull();
+    });
+
+    test('Should not update itinerary when field id is not found', async () => {
+      let itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', itineraryForUpdation.name);
+      expect(itineraryDB.updatedAt).toBeNull();
+
+      const { body, statusCode } = await request.put({
+        url: URL_ITINERARY,
+        data: { ...itineraryDB, name: 'New Name for Itinerary' },
+        params: `${itineraryDB._id.slice(0, 35)}2`
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('message', 'Itinerary was not found');
+
+      itineraryDB = await database(Itinerary).findFirst();
+
+      expect(itineraryDB).toHaveProperty('name', itineraryForUpdation.name);
+      expect(itineraryDB.updatedAt).toBeNull();
+    });
+  });
 });
