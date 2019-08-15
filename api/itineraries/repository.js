@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = model => ({
+module.exports = (model, $) => ({
   create: async (data) => {
     const { dataValues: itinerary } = await model.create(data);
 
@@ -22,14 +22,39 @@ module.exports = model => ({
     };
   },
 
-  update: async ({ id: _id }, { createdAt, id, ...data }) => model.update(
-    {
+  update: async ({ id: _id }, { createdAt, id, ...data }) =>
+    model.update({
       ...data,
       _id,
       updatedAt: new Date()
-    }, {
-      where: { _id }
-    }),
+    }, { where: { _id } }),
 
   delete: async ({ id: _id }) => model.destroy({ where: { _id } }),
+
+  getByPlaces: async (params) => {
+    console.log('params', params)
+    const where = {
+      places: {
+        [$.contains]: [{
+          [params.field]: `LIKE %${params.value}%`
+
+        }]
+      }
+    };
+
+    console.log(where.places)
+
+    try {
+      const { rows, count } = await model.findAndCountAll({ where });
+
+      console.log('\n\n\nres', rows);
+
+      return {
+        itineraries: rows.map(itinerary => itinerary.dataValues),
+        count
+      };
+    } catch (error) {
+      throw error
+    }
+  }
 });

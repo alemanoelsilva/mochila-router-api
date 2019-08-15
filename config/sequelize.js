@@ -15,7 +15,7 @@ const sequelizeDB = ({
         host: 'localhost',
         dialect: 'postgres',
         operatorsAliases: false,
-        logging: false
+        logging: true
       });
 
       logger.trace(`Database connected ${database}`);

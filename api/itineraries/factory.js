@@ -1,10 +1,11 @@
 'use strict';
 
 const moment = require('moment');
+const Sequelize = require('sequelize');
 
 const adapter = require('./adapter');
 const model = require('./model');
-const repository = require('./repository')(model);
+const repository = require('./repository')(model, Sequelize.Op);
 const formatter = require('./formatter');
 
 const logger = require('../../config/logger');
@@ -61,6 +62,19 @@ module.exports = ({
     },
     repository: {
       delete: repository.delete
+    },
+    logger,
+    onSuccess: onSuccess(response),
+    onError: onError(response)
+  }),
+
+  listByPlaces: (request, response) => adapter.listByPlaces({
+    query: request.query,
+    repository: {
+      getByPlaces: repository.getByPlaces
+    },
+    formatter: {
+      list: formatter.formatListItinerary({ moment, formatDate })
     },
     logger,
     onSuccess: onSuccess(response),
