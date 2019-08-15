@@ -23,7 +23,7 @@ PORT=4000
 ### Create an image of Personalize Postgres
 
 ```bash
-docker build -t your_username_dockerhub/postgres .
+docker build -t your_username_dockerhub/postgres ./scripts/Dockerfile
 ```
 
 ### Execute to command
