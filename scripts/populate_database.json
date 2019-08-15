@@ -1,0 +1,41 @@
+{
+  "id": "4eb15893-4c95-4491-b10a-0784cdfa7626",
+  "isPrivate": false,
+  "isActive": true,
+  "name": "My Crazy Travel",
+  "description": "This is a description for my travel around Europe next summer, but I have no idea about what I cann see there",
+  "duration": 10,
+  "user": "email.gmail.com",
+  "places": [
+    {
+      "sequel": 1,
+      "zone": "Europe",
+      "country": "Ireland",
+      "city": "Dublin",
+      "name": "Phoenix Park"
+    },
+    {
+      "sequel": 2,
+      "zone": "Europe",
+      "country": "Ireland",
+      "city": "Dublin",
+      "name": "Fairview Park"
+    },
+    {
+      "sequel": 3,
+      "zone": "Europe",
+      "country": "England",
+      "city": "London",
+      "name": "London Eye"
+    },
+    {
+      "sequel": 4,
+      "zone": "Europe",
+      "country": "England",
+      "city": "London",
+      "name": "bigBang"
+    }
+  ],
+  "createdAt": "2019-08-15T21:57:07.868Z",
+  "updatedAt": "2019-08-15T21:57:07.868Z"
+}
