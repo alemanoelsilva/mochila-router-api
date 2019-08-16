@@ -15,6 +15,8 @@ POSTGRES_PASS=postgres123
 
 LOGGER_LEVEL=trace
 
+BACKUP_FILE_LOG=/log/mochila_router_api.log
+
 PORT=4000
 ```
 
@@ -23,7 +25,7 @@ PORT=4000
 ### Create an image of Personalize Postgres
 
 ```bash
-docker build -t your_username_dockerhub/postgres ./scripts/Dockerfile
+docker build -t your_username_dockerhub/postgres ./scripts
 ```
 
 ### Execute to command

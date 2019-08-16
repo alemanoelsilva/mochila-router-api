@@ -14,8 +14,8 @@ const sequelizeDB = ({
       connection = new Sequelize(database, user, pass, {
         host: 'localhost',
         dialect: 'postgres',
-        operatorsAliases: false,
-        logging: true
+        operatorsAliases: Sequelize.Op,
+        logging: false,
       });
 
       logger.trace(`Database connected ${database}`);

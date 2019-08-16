@@ -1,13 +1,13 @@
 'use strict';
 
-const repository = require('./repository');
-const Itinerary = require('./model');
+const repository = require('../../../api/itineraries/repository');
+const Itinerary = require('../../../api/itineraries/model');
 
 const {
   database,
   payloadMock: itinerary,
   listOfItinerariesMock,
-} = require('../../test/helpers');
+} = require('../../helpers');
 
 beforeEach(async () => database(Itinerary).destroy());
 

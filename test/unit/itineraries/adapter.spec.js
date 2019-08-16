@@ -5,12 +5,12 @@ const {
   list,
   update,
   remove,
-} = require('./adapter');
+} = require('../../../api/itineraries/adapter');
 
 const {
   payloadMock: payload,
   listOfItinerariesMock,
-} = require('../../test/helpers');
+} = require('../../helpers');
 
 describe('Itinerary Adapter Unit tests', () => {
   const mock = {

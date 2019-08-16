@@ -5,9 +5,9 @@ const {
   database,
   payloadMock: payload,
   listOfItinerariesMock
-} = require('../../test/helpers');
+} = require('../../helpers');
 
-const Itinerary = require('./model');
+const Itinerary = require('../../../api/itineraries/model');
 
 const URL_ITINERARY = '/api/itineraries';
 

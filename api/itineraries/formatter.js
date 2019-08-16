@@ -9,8 +9,11 @@ exports.formatListItinerary = ({ moment, formatDate }) => data => data.map(itine
   duration: itinerary.duration,
   user: itinerary.user,
   places: itinerary.places.map(place => ({
+    sequel: place.sequel,
+    zone: place.zone,
+    country: place.country,
+    city: place.city,
     name: place.name,
-    attraction: place.attraction,
   })),
   createdAt: moment(itinerary.createdAt).format(formatDate),
 }));
@@ -24,8 +27,11 @@ exports.formatItinerary = ({ moment, formatDate }) => itinerary => ({
   duration: itinerary.duration,
   user: itinerary.user,
   places: itinerary.places.map(place => ({
+    sequel: place.sequel,
+    zone: place.zone,
+    country: place.country,
+    city: place.city,
     name: place.name,
-    attraction: place.attraction,
   })),
   createdAt: moment(itinerary.createdAt).format(formatDate),
 })

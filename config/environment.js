@@ -16,7 +16,8 @@ const vars = {
     port: process.env.PORT
   },
   logger: {
-    level: ENVIRONMENT.TEST ? process.env.LOGGER_LEVEL : 'fatal'
+    level: ENVIRONMENT.TEST ? process.env.LOGGER_LEVEL : 'fatal',
+    backupFileLog: process.env.BACKUP_FILE_LOG,
   },
   db: {
     database: env === ENVIRONMENT.TEST ? process.env.POSTGRES_DATABASE_TEST : process.env.POSTGRES_DATABASE,

@@ -3,9 +3,12 @@
 const Joi = require('joi');
 
 const place = Joi.object({
-  name: Joi.string().optional(),
-  attraction: Joi.string().optional(),
-});
+  sequel: Joi.number().required(),
+  zone: Joi.string().required(),
+  country: Joi.string().required(),
+  city: Joi.string().required(),
+  name: Joi.string().required(),
+}).optional();
 
 exports.postRequest = Joi.object({
   isActive: Joi.boolean().required().optional(true),
