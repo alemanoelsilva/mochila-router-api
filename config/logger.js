@@ -14,14 +14,14 @@ module.exports = bunyan.createLogger({
   }, {
     stream: env !== 'test'
       ? new RotatingFileStream({
-        path: path.join(path.resolve(), backupFileLog),
-        period: '7d',
-        totalFiles: 10,
-        rotateExisting: true,
-        threshold: '10m',
-        totalSize: '20m',
-        gzip: false,
-      })
+          path: path.join(path.resolve(), `${backupFileLog}_${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}.log`),
+          period: '1d',
+          totalFiles: 10,
+          rotateExisting: true,
+          threshold: '10m',
+          totalSize: '20m',
+          gzip: false,
+        })
       : process.stdout,
     level,
   }],

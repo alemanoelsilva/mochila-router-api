@@ -31,27 +31,18 @@ module.exports = (model, $) => ({
 
   delete: async ({ id: _id }) => model.destroy({ where: { _id } }),
 
-  getByPlaces: async (params) => {
-    console.log('params', params)
-    const where = {
-      places: {
-        [$.contains]: [{
-          [params.field]: `LIKE %${params.value}%`
-
-        }]
-      }
-    };
-
-    console.log(where.places)
-
+  getByPlaces: async ({ field, value }) => {
     try {
-      const { rows, count } = await model.findAndCountAll({ where });
+      const { rows } = await model.findAndCountAll();
 
-      console.log('\n\n\nres', rows);
+      const filteredIntineraries = rows.filter((itinerary) => {
+        if (itinerary.places.some((place) => place[field].toUpperCase() === value.toUpperCase())) return itinerary
+
+      })
 
       return {
-        itineraries: rows.map(itinerary => itinerary.dataValues),
-        count
+        itineraries: filteredIntineraries.map(itinerary => itinerary.dataValues),
+        count: filteredIntineraries.length
       };
     } catch (error) {
       throw error
