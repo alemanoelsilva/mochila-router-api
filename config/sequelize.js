@@ -18,7 +18,7 @@ const sequelizeDB = ({
         logging: false,
       });
 
-      logger.trace(`Database connected ${database}`);
+      logger.info(`Database connected ${database}`);
 
       return connection;
     } catch (error) {

@@ -31,18 +31,12 @@ module.exports = (model, $) => ({
 
   delete: async ({ id: _id }) => model.destroy({ where: { _id } }),
 
-  getByPlaces: async ({ field, value }) => {
+  getByPlaces: async () => {
     try {
       const { rows } = await model.findAndCountAll();
 
-      const filteredIntineraries = rows.filter((itinerary) => {
-        if (itinerary.places.some((place) => place[field].toUpperCase() === value.toUpperCase())) return itinerary
-
-      })
-
       return {
-        itineraries: filteredIntineraries.map(itinerary => itinerary.dataValues),
-        count: filteredIntineraries.length
+        itineraries: rows.map(itinerary => itinerary.dataValues),
       };
     } catch (error) {
       throw error

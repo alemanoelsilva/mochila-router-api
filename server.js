@@ -14,7 +14,7 @@ const init = async () => {
     responseDatabase = await connect({ database, user, pass });
 
   } catch (error) {
-    logger.error('There is an error on connection Postgres', error);
+    logger.error('There is an error on Postgres connection', error);
     return null;
   };
 

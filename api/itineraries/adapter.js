@@ -115,21 +115,28 @@ exports.listByPlaces = async ({
   onError,
 }) => {
   try {
-    logger.info('Get Itinerary\'s array filtered by  places', query);
+    logger.info(`Get Itinerary\'s array filtered by places.${query.field} equal ${query.value}`);
 
-    const { itineraries, count } = await repository.getByPlaces(query);
+    let { itineraries: filteredIntineraries } = await repository.getByPlaces();
 
-    logger.info(`Database returned the follow list of itineraries ${JSON.stringify(itineraries)} with total ${count} itineraries`);
+    if (!!query.field && !!query.value) {
+      filteredIntineraries = filteredIntineraries.filter((itinerary) => {
+        if (itinerary.places.some((place) => place[query.field].toUpperCase() === query.value.toUpperCase()))
+          return itinerary
+      })
+    }
+
+    logger.info(`Database returned the follow list of itineraries ${JSON.stringify(filteredIntineraries)} with total ${filteredIntineraries.length} itinerary (ies)`);
 
     return onSuccess({
       statusCode: 200,
       data: {
-        itineraries: formatter.list(itineraries),
-        count
+        itineraries: formatter.list(filteredIntineraries),
+        count: filteredIntineraries.length
       }
     });
   } catch (error) {
-    logger.error('There is an error at the Itinerary find', error);
+    logger.error('There is an error at the Itinerary Find by Places', error);
     return onError(error);
   }
 };

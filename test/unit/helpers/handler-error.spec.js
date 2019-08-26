@@ -1,6 +1,6 @@
 'use strict';
 
-const handlerError = require('../../api/helpers/handler-error');
+const handlerError = require('../../../api/helpers/handler-error');
 
 describe('Handler Error Unit tests', () => {
   const response = {

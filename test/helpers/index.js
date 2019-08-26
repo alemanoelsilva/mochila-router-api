@@ -14,7 +14,7 @@ const request = {
   delete: ({ url, params = '' }) => supertest(app).delete(`${url}/${params}`),
 };
 
-const database = (model) => ({
+const database = model => ({
   findFirst: async (query = {}) => {
     const result = await model.findAll(query);
     return result[0] ? result[0].dataValues || {} : {};
@@ -32,16 +32,39 @@ const database = (model) => ({
   createOne: async data => model.create(data),
 });
 
+const placesMock = [{
+  sequel: 1,
+  zone: 'Europe',
+  country: 'Ireland',
+  city: 'Dublin',
+  name: 'Phoenix Park',
+}, {
+  sequel: 2,
+  zone: 'Europe',
+  country: 'Ireland',
+  city: 'Dublin',
+  name: 'Fairview Park',
+}, {
+  sequel: 3,
+  zone: 'Europe',
+  country: 'England',
+  city: 'London',
+  name: 'Big Bang',
+}, {
+  sequel: 4,
+  zone: 'Asia',
+  country: 'Japan',
+  city: 'Tokyo',
+  name: 'Tokey Skytree',
+}];
+
 const payloadMock = {
   name: 'Teste',
-	isPrivate: true,
-	description: 'Descrição deste roteiro para teste',
-	duration: 5,
-	user: 'email_para_teste@gmail.com',
-	places: [{
-		name: 'Place 1',
-		attraction: 'Atração 1'
-	}]
+  isPrivate: true,
+  description: 'Descrição deste roteiro para teste',
+  duration: 5,
+  user: 'email_para_teste@gmail.com',
+  places: placesMock,
 };
 
 const listOfItinerariesMock = [{
@@ -51,7 +74,7 @@ const listOfItinerariesMock = [{
   description: 'The follow Itinerary is about the country XXXX and my vacation in the ...',
   duration: 1,
   user: 'email@email.com',
-  places: [ { name: 'Dublin', attraction: 'Temple Bar' } ],
+  places: placesMock,
 }, {
   isPrivate: false,
   isActive: true,
@@ -59,7 +82,7 @@ const listOfItinerariesMock = [{
   description: 'The follow Itinerary is about the country XXXX and my vacation in the ...',
   duration: 2,
   user: 'email@email.com',
-  places: [ { name: 'Dublin', attraction: 'Temple Bar' } ],
+  places: placesMock,
 }, {
   isPrivate: true,
   isActive: true,
@@ -67,12 +90,25 @@ const listOfItinerariesMock = [{
   description: 'The follow Itinerary is about the country XXXX and my vacation in the ...',
   duration: 5,
   user: 'email@email.com',
-  places: [ { name: 'Dublin', attraction: 'Temple Bar' } ],
+  places: [{
+    sequel: 1,
+    zone: 'Europe',
+    country: 'Ireland',
+    city: 'Dublin',
+    name: 'Phoenix Park',
+  }, {
+    sequel: 2,
+    zone: 'America',
+    country: 'Canada',
+    city: 'Niagara',
+    name: 'Niagara Fall\'s',
+  }],
 }];
 
 module.exports = {
   request,
   database,
+  placesMock,
   payloadMock,
   listOfItinerariesMock,
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const handlerSuccess = require('../../api/helpers/handler-success');
+const handlerSuccess = require('../../../api/helpers/handler-success');
 
 describe('Handler Error Unit tests', () => {
   const response = {

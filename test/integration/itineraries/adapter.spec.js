@@ -3,6 +3,7 @@
 const {
   request,
   database,
+  placesMock: places,
   payloadMock: payload,
   listOfItinerariesMock
 } = require('../../helpers');
@@ -10,6 +11,15 @@ const {
 const Itinerary = require('../../../api/itineraries/model');
 
 const URL_ITINERARY = '/api/itineraries';
+const URL_ITINERARY_PLACE = '/api/itineraries/place';
+
+const placesValidate = places => places.forEach((place, index) => {
+  expect(place).toHaveProperty('sequel', payload.places[index].sequel);
+  expect(place).toHaveProperty('zone', payload.places[index].zone);
+  expect(place).toHaveProperty('country', payload.places[index].country);
+  expect(place).toHaveProperty('city', payload.places[index].city);
+  expect(place).toHaveProperty('name', payload.places[index].name);
+});
 
 beforeEach(async () => database(Itinerary).destroy());
 
@@ -18,7 +28,7 @@ describe('Itinerary Adapter Integration Test', () => {
     test('Should create one itinerary with property places has one unique object', async () => {
       const { body, statusCode } = await request.post({
         url: URL_ITINERARY,
-        data: payload
+        data: { ...payload, places: [places[0]] },
       });
 
       expect(statusCode).toEqual(201);
@@ -35,22 +45,13 @@ describe('Itinerary Adapter Integration Test', () => {
 
       expect(itineraryDB.places.length).toEqual(1);
 
-      itineraryDB.places.forEach((place, index) => {
-        expect(place).toHaveProperty('name', payload.places[index].name);
-        expect(place).toHaveProperty('attraction', payload.places[index].attraction);
-      });
+      placesValidate(itineraryDB.places);
     });
 
     test('Should create one itinerary with property places has more than one object', async () => {
       const { body, statusCode } = await request.post({
         url: URL_ITINERARY,
-        data: {
-          ...payload, places: [{
-            name: 'name place for test 1', attraction: 'attraction place for test 1'
-          }, {
-            name: 'name place for test 2', attraction: 'attraction place for test 2'
-          }]
-        }
+        data: payload,
       });
 
       expect(statusCode).toEqual(201);
@@ -65,12 +66,9 @@ describe('Itinerary Adapter Integration Test', () => {
       expect(itineraryDB).toHaveProperty('duration', payload.duration);
       expect(itineraryDB).toHaveProperty('user', payload.user);
 
-      expect(itineraryDB.places.length).toEqual(2);
+      expect(itineraryDB.places.length).toEqual(4);
 
-      itineraryDB.places.forEach((place, index) => {
-        expect(place).toHaveProperty('name', `name place for test ${index + 1}`);
-        expect(place).toHaveProperty('attraction', `attraction place for test ${index + 1}`);
-      });
+      placesValidate(itineraryDB.places);
     });
 
     test('Should create one itinerary with property places empty', async () => {
@@ -449,6 +447,110 @@ describe('Itinerary Adapter Integration Test', () => {
       itineraryDB = await database(Itinerary).findFirst();
 
       expect(itineraryDB).toHaveProperty('name', itineraryForDeletion.name);
+    });
+  });
+
+  describe('Filtering List of itineraries by Places', () => {
+    beforeEach(async () => database(Itinerary).createMany(listOfItinerariesMock));
+
+    test('Should return all itinerary registered on API (Or first 10 register on DB)', async () => {
+      const { body, statusCode } = await request.get({
+        url: URL_ITINERARY_PLACE
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('itineraries');
+      expect(body).toHaveProperty('count');
+
+      const { itineraries, count } = body;
+
+      expect(count).toEqual(3);
+      expect(itineraries.length).toEqual(3);
+
+      itineraries.forEach((itinerary, index) => {
+        expect(itinerary.isPrivate).toEqual(listOfItinerariesMock[index].isPrivate);
+        expect(itinerary.isActive).toEqual(listOfItinerariesMock[index].isActive);
+        expect(itinerary.name).toEqual(listOfItinerariesMock[index].name);
+        expect(itinerary.description).toEqual(listOfItinerariesMock[index].description);
+        expect(itinerary.duration).toEqual(listOfItinerariesMock[index].duration);
+        expect(itinerary.user).toEqual(listOfItinerariesMock[index].user);
+        expect(itinerary.places).toEqual(listOfItinerariesMock[index].places);
+      });
+
+      const itineraryDB = await database(Itinerary).findAll();
+
+      expect(itineraryDB.length).toEqual(3);
+    });
+
+    test('Should return only one itinerary filtered by field "place.zone" when it is equal "America"', async () => {
+      const { body, statusCode } = await request.get({
+        url: URL_ITINERARY_PLACE,
+        query: { field: 'zone', value: 'america' },
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('itineraries');
+      expect(body).toHaveProperty('count');
+
+      const { itineraries, count } = body;
+
+      expect(count).toEqual(1);
+      expect(itineraries.length).toEqual(1);
+
+      itineraries.forEach((itinerary, index) => {
+        expect(itinerary.isPrivate).toEqual(listOfItinerariesMock[index+2].isPrivate);
+        expect(itinerary.isActive).toEqual(listOfItinerariesMock[index+2].isActive);
+        expect(itinerary.name).toEqual(listOfItinerariesMock[index+2].name);
+        expect(itinerary.description).toEqual(listOfItinerariesMock[index+2].description);
+        expect(itinerary.duration).toEqual(listOfItinerariesMock[index+2].duration);
+        expect(itinerary.user).toEqual(listOfItinerariesMock[index+2].user);
+        expect(itinerary.places).toEqual(listOfItinerariesMock[index+2].places);
+
+        expect(itinerary.places[0].zone).toEqual('Europe');
+        expect(itinerary.places[1].zone).toEqual('America');
+      });
+
+      const itineraryDB = await database(Itinerary).findAll({});
+
+      expect(itineraryDB.length).toEqual(3);
+    });
+
+    test('Should return only two itinerary filtered by field "place.zone" when it is equal "Asia"', async () => {
+      const { body, statusCode } = await request.get({
+        url: URL_ITINERARY_PLACE,
+        query: { field: 'zone', value: 'asia' },
+      });
+
+      expect(statusCode).toEqual(200);
+
+      expect(body).toHaveProperty('itineraries');
+      expect(body).toHaveProperty('count');
+
+      const { itineraries, count } = body;
+
+      expect(count).toEqual(2);
+      expect(itineraries.length).toEqual(2);
+
+      itineraries.forEach((itinerary, index) => {
+        expect(itinerary.isPrivate).toEqual(listOfItinerariesMock[index].isPrivate);
+        expect(itinerary.isActive).toEqual(listOfItinerariesMock[index].isActive);
+        expect(itinerary.name).toEqual(listOfItinerariesMock[index].name);
+        expect(itinerary.description).toEqual(listOfItinerariesMock[index].description);
+        expect(itinerary.duration).toEqual(listOfItinerariesMock[index].duration);
+        expect(itinerary.user).toEqual(listOfItinerariesMock[index].user);
+        expect(itinerary.places).toEqual(listOfItinerariesMock[index].places);
+
+        expect(itinerary.places[0].zone).toEqual('Europe');
+        expect(itinerary.places[1].zone).toEqual('Europe');
+        expect(itinerary.places[2].zone).toEqual('Europe');
+        expect(itinerary.places[3].zone).toEqual('Asia');
+      });
+
+      const itineraryDB = await database(Itinerary).findAll({});
+
+      expect(itineraryDB.length).toEqual(3);
     });
   });
 });

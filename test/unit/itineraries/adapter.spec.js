@@ -5,6 +5,7 @@ const {
   list,
   update,
   remove,
+  listByPlaces,
 } = require('../../../api/itineraries/adapter');
 
 const {
@@ -18,11 +19,19 @@ describe('Itinerary Adapter Unit tests', () => {
     params: {
       id: 'id 1'
     },
+    query: {
+      field: '',
+      value: '',
+    },
     repository: {
       save: jest.fn(data => data),
       update: jest.fn((params, data) => data.name.includes('1') ? 1 : 0),
       delete: jest.fn((params) => params.id.includes('1') ? 1 : 0),
       getAll: jest.fn(() => ({
+        itineraries: listOfItinerariesMock,
+        count: listOfItinerariesMock.length
+      })),
+      getByPlaces: jest.fn(() => ({
         itineraries: listOfItinerariesMock,
         count: listOfItinerariesMock.length
       })),
@@ -203,6 +212,40 @@ describe('Itinerary Adapter Unit tests', () => {
       mock.repository.delete = () => Promise.reject(new Error('invalid Itinerary'));
 
       const response = await remove(mock);
+
+      expect(mock.logger.info).toHaveBeenCalledTimes(1);
+      expect(mock.onSuccess).toHaveBeenCalledTimes(0);
+      expect(mock.logger.error).toHaveBeenCalledTimes(1);
+      expect(mock.onError).toHaveBeenCalledTimes(1);
+
+      expect(response).toHaveProperty('status_code', 'name', 'message', 'details');
+      expect(response.status_code).toEqual(500);
+      expect(response.message).toEqual('invalid Itinerary');
+    });
+  });
+
+  describe('List one or many Itineraries by Filter', () => {
+    test('Should return a list of Itinerary with success', async () => {
+      const { data, statusCode } = await listByPlaces(mock);
+
+      expect(statusCode).toEqual(200);
+
+      expect(data).toHaveProperty('itineraries', listOfItinerariesMock);
+      expect(data).toHaveProperty('count', listOfItinerariesMock.length);
+
+      expect(mock.logger.info).toHaveBeenCalledTimes(2);
+      expect(mock.repository.getByPlaces).toHaveBeenCalledTimes(1);
+      expect(mock.formatter.list).toHaveBeenCalledTimes(1);
+      expect(mock.onSuccess).toHaveBeenCalledTimes(1);
+
+      expect(mock.logger.error).toHaveBeenCalledTimes(0);
+      expect(mock.onError).toHaveBeenCalledTimes(0);
+    });
+
+    test('Should return an error, invalid Itinerary', async () => {
+      mock.repository.getByPlaces = () => Promise.reject(new Error('invalid Itinerary'));
+
+      const response = await listByPlaces(mock);
 
       expect(mock.logger.info).toHaveBeenCalledTimes(1);
       expect(mock.onSuccess).toHaveBeenCalledTimes(0);
