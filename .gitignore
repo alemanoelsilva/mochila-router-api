@@ -1,5 +1,8 @@
 node_modules
 coverage
+.stryker-tmp
+log
+
 package-lock*
 
 .vscode
