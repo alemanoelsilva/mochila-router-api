@@ -5,6 +5,7 @@ const Sequelize = require('sequelize');
 const logger = require('./logger');
 
 let connection = null;
+
 const sequelizeDB = ({
   connect: async ({ database, user, pass }) => {
     if (connection) return connection;
