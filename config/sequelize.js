@@ -9,7 +9,6 @@ let connection = null;
 const sequelizeDB = ({
   connect: async ({ database, user, pass }) => {
     if (connection) return connection;
-
     try {
       connection = new Sequelize(database, user, pass, {
         host: 'localhost',
